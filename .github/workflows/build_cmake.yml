@@ -17,12 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-#          - {
-#            name: "macOS latest clang",
-#            artifact: "macOS-clang.tar.xz",
-#            os: macos-latest,
-#            cc: "clang", cxx: "clang++"
-#          }
+          - {
+            name: "macOS latest clang",
+            artifact: "macOS-clang.tar.xz",
+            os: macos-latest,
+            cc: "clang", cxx: "clang++"
+          }
           - {
             name: "macOS latest gcc",
             artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
@@ -62,7 +62,7 @@ jobs:
         run: |
           mkdir test_build
           cd test_build
-          CXX=g++-9 CX=gcc-9 cmake -S.. -B. -G"Ninja"
+          CXX=${{matrix.config.cxx}} CX=${{matrix.config.cc}} cmake -S.. -B. -G"Ninja"
           ninja gmp_test
 
       - name: Run Tests
