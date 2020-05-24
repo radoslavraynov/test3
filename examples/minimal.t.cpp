@@ -4,6 +4,7 @@
 
 #include <gmp.h>
 #include <gtest/gtest.h>
+#include <unordered_map>
 
 TEST(Cxx17, Basic)
 {
