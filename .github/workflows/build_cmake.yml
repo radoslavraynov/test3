@@ -19,35 +19,44 @@ jobs:
         config:
           - {
             name: "macOS-latest clang",
-#            artifact: "macOS-clang.tar.xz",
+            artifact: "macOS-clang.tar.xz",
             os: macos-latest,
             cc: "clang", cxx: "clang++"
           }
           - {
             name: "macOS-latest gcc9",
-#            artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
-            os: macos-latest,               # where is this specified
-            cc: "gcc-9", cxx: "g++-9"       # how do I install that
-                                            # check how these are exported within the session
+            artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
+            os: macos-latest,
+            cc: "gcc-9", cxx: "g++-9"
+          }
+          - {
+            name: "Ubuntu-latest gcc",
+            artifact: "Ubuntu.tar.xz",
+            os: ubuntu-latest,
+            cc: "gcc", cxx: "g++"
           }
 
     steps:
-      - uses: actions/checkout@v1           # what's that
+      - uses: actions/checkout@v1  # this set up the virtual environment, which has a whole lot
+                                   # as of this writing: gcc9, clang10, cmake3.17, homebrew...
 
       - name: Download and install homebrew
         id: step_homebrew
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-      - name: Install gcc, cmake, ninja  # install gcc conditionally
+      - name: Install missing dev tools
         id: get_dev_tools
-        run: brew install gcc cmake ninja
+        run: |
+          echo "----- gcc9, clang10 and a lot more are already installed"
+          brew install ninja
 
       - name: Install gtest from source
         id: step_gtest
         run: |
           git clone https://github.com/google/googletest.git
           mkdir googletest/build && cd googletest/build
-          CXX=${{matrix.config.cxx}} CX=${{matrix.config.cc}} cmake .. -DBUILD_SHARED_LIBS=ON
+          # have to build gtest with gcc even if you intend to build with clang later
+          CXX=g++-9 CC=gcc-9 cmake .. -DBUILD_SHARED_LIBS=ON
           make
           make install
 
@@ -56,10 +65,10 @@ jobs:
         run: |
           mkdir test_build
           cd test_build
-          CXX=${{matrix.config.cxx}} CX=${{matrix.config.cc}} cmake -S.. -B. -G"Ninja"
+          CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake -S.. -B. -G"Ninja"
           ninja gmp_test
 
-      - name: Run tests  # fail is the return is nonzero
+      - name: Run tests  # fails if the return is nonzero
         id: step_run_project_tests
         run: |
           ./test_build/examples/gmp_test
