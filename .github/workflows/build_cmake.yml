@@ -68,4 +68,4 @@ jobs:
       - name: Run Tests
         id: step_run_project_tests
         run: |
-          ./examples/gmp_test
+          ./test_build/examples/gmp_test
