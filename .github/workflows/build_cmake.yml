@@ -17,17 +17,18 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {
-            name: "macOS latest clang",
-            artifact: "macOS-clang.tar.xz",
-            os: macos-latest,
-            cc: "clang", cxx: "clang++"
-          }
+#          - {
+#            name: "macOS latest clang",
+#            artifact: "macOS-clang.tar.xz",
+#            os: macos-latest,
+#            cc: "clang", cxx: "clang++"
+#          }
           - {
             name: "macOS latest gcc",
             artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
             os: macos-latest,               # where is this specified
             cc: "gcc-9", cxx: "g++-9"       # how do I install that
+                                            # check how these are exported within the session
           }
 
     steps:
@@ -45,7 +46,7 @@ jobs:
 
       - name: Install gcc, cmake, ninja
         id: get_dev_tools
-        run: brew install gcc cmake ninja git
+        run: brew install gcc cmake ninja
 
       - name: Install gtest
         id: step_gtest
