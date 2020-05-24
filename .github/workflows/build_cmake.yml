@@ -10,60 +10,61 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build: ${{ matrix.config.name }}
-  runs-on: ${{ matrix.config.os }}
-  strategy:
-    fail-fast: false
-    matrix:
-      config:
-        - {
-          name: "macOS latest clang",
-          artifact: "macOS-clang.tar.xz",
-          os: macos-latest,
-          cc: "clang", cxx: "clang++"
-        }
-        - {
-          name: "macOS latest gcc",
-          artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
-          os: macos-latest,               # where is this specified
-          cc: "gcc-9", cxx: "g++-9"       # how do I install that
-        }
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {
+            name: "macOS latest clang",
+            artifact: "macOS-clang.tar.xz",
+            os: macos-latest,
+            cc: "clang", cxx: "clang++"
+          }
+          - {
+            name: "macOS latest gcc",
+            artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
+            os: macos-latest,               # where is this specified
+            cc: "gcc-9", cxx: "g++-9"       # how do I install that
+          }
 
-  steps:
-    - uses: actions/checkout@v1           # what's that
+    steps:
+      - uses: actions/checkout@v1           # what's that
 
-    - name: Sanity check
-      id: step_sanity_check
-      run: |
-        echo $GITHUB_WORKSPACE
-        ls -l
+      - name: Sanity check
+        id: step_sanity_check
+        run: |
+          echo $GITHUB_WORKSPACE
+          ls -l
 
-    - name: Download and Install Homebrew
-      id: step_homebrew
-      run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+      - name: Download and Install Homebrew
+        id: step_homebrew
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-    - name: Install gcc, cmake, ninja
-      id: get_dev_tools
-      run: brew install gcc cmake ninja git
+      - name: Install gcc, cmake, ninja
+        id: get_dev_tools
+        run: brew install gcc cmake ninja git
 
-    - name: Install gtest
-      id: step_gtest
-      run: |
-        git clone https://github.com/google/googletest.git
-        mkdir googletest/build && cd googletest/build
-        CXX=g++-9 CC=gcc-9 cmake .. -DBUILD_SHARED_LIBS=ON
-        make
-        make install
+      - name: Install gtest
+        id: step_gtest
+        run: |
+          git clone https://github.com/google/googletest.git
+          mkdir googletest/build && cd googletest/build
+          CXX=g++-9 CC=gcc-9 cmake .. -DBUILD_SHARED_LIBS=ON
+          make
+          make install
 
-    - name: Build Project
-      id: step_build_project
-      run: |
-        mkdir test_build
-        cd test_build
-        CXX=g++-9 CX=gcc-9 cmake -S.. -B. -G"Ninja"
-        ninja gmp_test
+      - name: Build Project
+        id: step_build_project
+        run: |
+          mkdir test_build
+          cd test_build
+          CXX=g++-9 CX=gcc-9 cmake -S.. -B. -G"Ninja"
+          ninja gmp_test
 
-    - name: Run Tests
-      id: step_run_project_tests
-      run: |
-        ./examples/gmp_test
+      - name: Run Tests
+        id: step_run_project_tests
+        run: |
+          ./examples/gmp_test
