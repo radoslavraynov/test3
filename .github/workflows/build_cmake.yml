@@ -17,12 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {
-            name: "macOS-latest clang",
-            artifact: "macOS-clang.tar.xz",
-            os: macos-latest,
-            cc: "clang", cxx: "clang++"
-          }
+#          - {
+#            name: "macOS-latest clang",
+#            artifact: "macOS-clang.tar.xz",
+#            os: macos-latest,
+#            cc: "clang", cxx: "clang++"
+#          }
           - {
             name: "macOS-latest gcc9",
             artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
@@ -48,6 +48,7 @@ jobs:
         id: get_dev_tools
         run: |
           echo "----- gcc9, clang10 and a lot more are already installed"
+          echo "::set-output name=ebasi::OK TEST THIS"
           brew install ninja
 
       - name: Install gtest from source
@@ -56,9 +57,9 @@ jobs:
           git clone https://github.com/google/googletest.git
           mkdir googletest/build && cd googletest/build
           # have to build gtest with gcc even if you intend to build with clang later
-          CXX=g++-9 CC=gcc-9 cmake .. -DBUILD_SHARED_LIBS=ON
-          make
-          make install
+          CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake .. -G"Ninja" -DBUILD_SHARED_LIBS=ON
+          ninja
+          ninja install
 
       - name: Build project
         id: step_build_project
@@ -71,4 +72,5 @@ jobs:
       - name: Run tests  # fails if the return is nonzero
         id: step_run_project_tests
         run: |
+          echo "${{get_dev_tools.steps.get_dev_tools.outputs.ebasi}}"
           ./test_build/examples/gmp_test
