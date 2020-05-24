@@ -72,5 +72,5 @@ jobs:
       - name: Run tests  # fails if the return is nonzero
         id: step_run_project_tests
         run: |
-          echo "${{get_dev_tools.steps.get_dev_tools.outputs.ebasi}}"
+          echo "${{steps.get_dev_tools.outputs.ebasi}}"
           ./test_build/examples/gmp_test
