@@ -7,7 +7,7 @@ on:  # use can also do [push, pull_request] with no further specification
   pull_request:
     tags:
       - feature/dev
-  schedue:
+  schedule:
     - cron: '0 6 * * *'
 
 
