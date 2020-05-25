@@ -47,16 +47,10 @@ jobs:
       - uses: actions/checkout@v1  # this set up the virtual environment, which has a whole lot
                                    # as of this writing: gcc9, clang10, cmake3.17, homebrew...
 
-      - name: Download and install homebrew
-        id: step_homebrew
-        if: ${{ runner.os == 'macOS' }}
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-
       - name: Install missing dev tools (brew)
         id: get_dev_tools_brew
         if: ${{ runner.os == 'macOS' }}
         run: brew install ninja
-        # echo "::set-output name=ebasi::OK TEST THIS"
 
       - name: Install missing dev tools (apt-get)
         id: get_dev_tools_aptget
@@ -71,7 +65,6 @@ jobs:
           CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake .. -G"Ninja" -DBUILD_SHARED_LIBS=ON
           ninja
           sudo ninja install
-#         sudo needed on Linux
 
       - name: Build project
         id: step_build_project
@@ -84,4 +77,3 @@ jobs:
       - name: Run tests
         id: step_run_project_tests
         run: ./test_build/examples/gmp_test
-#           echo "${{steps.get_dev_tools.outputs.ebasi}}"
