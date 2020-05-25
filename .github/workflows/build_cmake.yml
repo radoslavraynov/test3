@@ -8,9 +8,8 @@ on:
   schedule:
     - cron: '0 6 * * *'
 
-
 env:
-  CMAKE_VERSION: 3.16.2
+  CMAKE_VERSION: 3.17
   NINJA_VERSION: 1.9.0
   BUILD_TYPE: Release
 
@@ -42,7 +41,12 @@ jobs:
       - name: Install missing dev tools (brew)
         id: get_dev_tools_brew
         if: ${{ runner.os == 'macOS' }}
-        run: brew install ninja
+        run: brew install ninja pkg-config autoconf automake gnu-tar libtool yasm ctags
+
+      - name: Install libraries (brew)
+        id: get_dev_tools_brew
+        if: ${{ runner.os == 'macOS' }}
+        run: brew install mpir mpfr flint ntl bdw-gc libatomic_ops gdbm glpk boost libmpc libomp xz
 
       - name: Install missing dev tools (apt-get)
         id: get_dev_tools_aptget
