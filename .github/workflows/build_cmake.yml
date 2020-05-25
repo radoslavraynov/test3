@@ -46,9 +46,8 @@ jobs:
 
       - name: Install missing dev tools
         id: get_dev_tools
-        run: |
-#          echo "::set-output name=ebasi::OK TEST THIS"
-          brew install ninja
+        run: brew install ninja
+        # echo "::set-output name=ebasi::OK TEST THIS"
 
       - name: Install gtest from source
         id: step_gtest
@@ -69,6 +68,5 @@ jobs:
 
       - name: Run tests
         id: step_run_project_tests
-        run: |
-#          echo "${{steps.get_dev_tools.outputs.ebasi}}"
-          ./test_build/examples/gmp_test
+        run: ./test_build/examples/gmp_test
+        # echo "${{steps.get_dev_tools.outputs.ebasi}}"
