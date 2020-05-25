@@ -49,12 +49,19 @@ jobs:
 
       - name: Download and install homebrew
         id: step_homebrew
+        if: jobs.build.name == macos-latest
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-      - name: Install missing dev tools
-        id: get_dev_tools
+      - name: Install missing dev tools (brew)
+        id: get_dev_tools_brew
+        if:jobs.build.name == macos-latest
         run: brew install ninja
         # echo "::set-output name=ebasi::OK TEST THIS"
+
+      - name: Install missing dev tools (apt-get)
+        id: get_dev_tools_aptget
+        if: jobs.build.name == ubuntu-latest
+        run: apt-get install ninja -y
 
       - name: Install gtest from source
         id: step_gtest
@@ -62,8 +69,8 @@ jobs:
           git clone https://github.com/google/googletest.git
           mkdir googletest/build && cd googletest/build
           CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake .. -G"Ninja" -DBUILD_SHARED_LIBS=ON
-          make
-          sudo make install
+          ninja
+          sudo ninja install
 
       - name: Build project
         id: step_build_project
