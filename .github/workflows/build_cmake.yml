@@ -2,9 +2,14 @@
 
 name: Testing Github actions
 
-on:
+on:  # use can also do [push, pull_request] with no further specification
   push:
   pull_request:
+    tags:
+      - feature/dev
+  schedue:
+    - cron: '0 6 * * *'
+
 
 env:
   CMAKE_VERSION: 3.16.2
