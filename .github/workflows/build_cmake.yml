@@ -62,8 +62,8 @@ jobs:
           git clone https://github.com/google/googletest.git
           mkdir googletest/build && cd googletest/build
           CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake .. -G"Ninja" -DBUILD_SHARED_LIBS=ON
-          ninja
-          sudo ninja install
+          gmake
+          sudo gmake install
 
       - name: Build project
         id: step_build_project
