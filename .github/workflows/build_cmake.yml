@@ -54,7 +54,7 @@ jobs:
 
       - name: Install missing dev tools (brew)
         id: get_dev_tools_brew
-        if:jobs.build.name == macos-latest
+        if: jobs.build.name == macos-latest
         run: brew install ninja
         # echo "::set-output name=ebasi::OK TEST THIS"
 
