@@ -61,7 +61,7 @@ jobs:
       - name: Install missing dev tools (apt-get)
         id: get_dev_tools_aptget
         if: ${{ runner.os == 'Linux' }}
-        run: sudo apt-get install -y ninja
+        run: sudo apt-get install -y ninja-build
 
       - name: Install gtest from source
         id: step_gtest
