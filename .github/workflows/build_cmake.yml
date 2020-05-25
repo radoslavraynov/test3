@@ -3,8 +3,8 @@
 name: Testing Github actions
 
 on:
-  push
-  pull_request
+  push:
+  pull_request:
 
 env:
   CMAKE_VERSION: 3.16.2
