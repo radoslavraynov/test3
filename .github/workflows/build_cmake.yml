@@ -49,18 +49,18 @@ jobs:
 
       - name: Download and install homebrew
         id: step_homebrew
-        if: jobs.build.name == macos-latest
+        if: ${{ matrix.config.os == macos-latest }}
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
       - name: Install missing dev tools (brew)
         id: get_dev_tools_brew
-        if: jobs.build.name == macos-latest
+        if: ${{ matrix.config.os == macos-latest }}
         run: brew install ninja
         # echo "::set-output name=ebasi::OK TEST THIS"
 
       - name: Install missing dev tools (apt-get)
         id: get_dev_tools_aptget
-        if: jobs.build.name == ubuntu-latest
+        if: ${{ matrix.config.os == ubuntu-latest }}
         run: apt-get install ninja -y
 
       - name: Install gtest from source
