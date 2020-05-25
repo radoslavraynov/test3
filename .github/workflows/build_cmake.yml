@@ -1,6 +1,6 @@
 # taken from https://github.com/cristianadam/HelloWorld
 
-name: Test Github actions for a C++ project with a CMake/Ninja build
+name: Testing Github actions
 
 on: [push, pull_request]
 
@@ -25,7 +25,7 @@ jobs:
 #          }
           - {
             name: "macOS-latest gcc9",
-            artifact: "macOS-gcc.tar.xz",   # what's that really used for - the build
+            artifact: "macOS-gcc.tar.xz",
             os: macos-latest,
             cc: "gcc-9", cxx: "g++-9"
           }
@@ -33,7 +33,7 @@ jobs:
             name: "Ubuntu-latest gcc",
             artifact: "Ubuntu.tar.xz",
             os: ubuntu-latest,
-            cc: "gcc", cxx: "g++"
+            cc: "gcc-9", cxx: "g++-9"
           }
 
     steps:
@@ -47,8 +47,7 @@ jobs:
       - name: Install missing dev tools
         id: get_dev_tools
         run: |
-          echo "----- gcc9, clang10 and a lot more are already installed"
-          echo "::set-output name=ebasi::OK TEST THIS"
+#          echo "::set-output name=ebasi::OK TEST THIS"
           brew install ninja
 
       - name: Install gtest from source
@@ -56,10 +55,9 @@ jobs:
         run: |
           git clone https://github.com/google/googletest.git
           mkdir googletest/build && cd googletest/build
-          # have to build gtest with gcc even if you intend to build with clang later
           CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake .. -G"Ninja" -DBUILD_SHARED_LIBS=ON
           ninja
-          ninja install
+          sudo ninja install
 
       - name: Build project
         id: step_build_project
@@ -69,8 +67,8 @@ jobs:
           CXX=${{matrix.config.cxx}} CC=${{matrix.config.cc}} cmake -S.. -B. -G"Ninja"
           ninja gmp_test
 
-      - name: Run tests  # fails if the return is nonzero
+      - name: Run tests
         id: step_run_project_tests
         run: |
-          echo "${{steps.get_dev_tools.outputs.ebasi}}"
+#          echo "${{steps.get_dev_tools.outputs.ebasi}}"
           ./test_build/examples/gmp_test
